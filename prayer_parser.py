@@ -27,7 +27,6 @@ except ValueError:
     print(f"Defaulting to {next_year}...")
 sheet = wb.active
 
-
 def get_months_row():
     for row in range(sheet.max_row):
         for column in range(sheet.max_column):
