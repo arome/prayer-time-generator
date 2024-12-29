@@ -7,6 +7,7 @@ import re
 input_dir = "./input/"
 input_files = os.listdir(input_dir)
 filename = [s for s in input_files if "xlsx" in s][0]
+print(f"Using {filename} as input file")
 input_file_path = input_dir + filename
 wb = openpyxl.load_workbook(input_file_path, data_only=True)
 try:
@@ -76,11 +77,9 @@ months_row = get_months_row()
 months_columns = get_months_columns(months_row)
 
 prayer_times = dict()
-df = pd.read_csv("input/Calandrier-MADANI-Moonode.csv")
+df = pd.read_csv("input/moonode-example.csv")
 # Ensure your 'date' column is of datetime type
 df["date"] = df["date"].replace("2020", str(year), regex=True)
-df["dateHijri"] = df["dateHijri"].replace("2020", str(year), regex=True)
-
 
 def adjust_time(time, cond=False):
     if cond and int(time.strftime("%H")) >= 9:
@@ -127,7 +126,10 @@ for i, month_column in enumerate(months_columns):
     row = iqama_date_row + 1
     cell = sheet.cell(row, month_column + 1)
     while cell.value:
-        from_date, to_date = cell.value.split(" To ")
+        if "To" in cell.value:
+            from_date, to_date = cell.value.split(" To ")
+        else: 
+            from_date = to_date = cell.value
         for d in range(int(from_date), int(to_date) + 1):
             date_string = str(i + 1).rjust(2, "0") + "/" + str(d).rjust(2, "0")
             prayers = prayer_times[date_string]
@@ -183,7 +185,7 @@ for i, month_column in enumerate(months_columns):
         row = row + 1
         cell = sheet.cell(row, month_column + 1)
 print(df)
-df.to_csv("output/moonode.csv")
+df.to_csv("output/moonode.csv", index=False)
 print("outputting data to output/moonode.csv")
 
 with open("output/website.txt", "w") as f:
