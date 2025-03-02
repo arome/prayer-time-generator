@@ -1,4 +1,5 @@
 # Prayer Time Generator
+This tool is designed to generate the moonode and website files given the excel prayer time file provided by Al Huda admin.
 
 ## How to Use
 
